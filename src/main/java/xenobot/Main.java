@@ -30,7 +30,7 @@ public class Main {
 
         try {
             new JDABuilder(AccountType.BOT)
-                    .setToken("NTU4NDUwNTcwMDc2MzU2NjM4.XKutaw.zU2XaFZUzJ-LIeB76luUoAnhMzk")
+                    .setToken(BOT_TOKEN)
                     .setAudioEnabled(false)
                     .addEventListeners(listener)
                     .addEventListeners(new MemberJoin())
