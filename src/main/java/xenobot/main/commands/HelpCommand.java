@@ -45,9 +45,11 @@ public class HelpCommand implements ICommand {
 
         EmbedBuilder helpCommandEmbed = new EmbedBuilder();
         helpCommandEmbed.setTitle("⫸ Help Menu ⫷");
-        helpCommandEmbed.addField("Command help for `" + command.getInvoke() + "`", command.getHelp(), false);
+        helpCommandEmbed.addField("__Command help for__ `" + command.getInvoke() + "`", command.getHelp(), false);
+        helpCommandEmbed.setDescription("All commands can be found by typing `" + Constants.PREFIX + "help` in the " +
+                "<#" + Constants.BOT_COMMANDS + "> channel.");
         helpCommandEmbed.setColor(Color.MAGENTA);
-        event.getChannel().sendMessage(helpCommandEmbed.build()).queue();
+        event.getChannel().sendMessage(event.getAuthor().getAsMention()).embed(helpCommandEmbed.build()).queue();
     }
 
     private void generateAndSendEmbed(GuildMessageReceivedEvent event) {
@@ -65,7 +67,7 @@ public class HelpCommand implements ICommand {
                 (command) -> descriptionBuilder.append("**").append(command.getInvoke()).append("**\n")
         );
 
-        event.getChannel().sendMessage(builder.build()).queue();
+        event.getChannel().sendMessage(event.getAuthor().getAsMention()).embed(builder.build()).queue();
     }
 
     @Override

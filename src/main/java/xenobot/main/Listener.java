@@ -26,9 +26,9 @@ public class Listener extends ListenerAdapter {
                     int msgCount = database.getMessageCount(event.getAuthor().getIdLong());
 
                     int points = PointUtils.computeBonusPoints(msgCount);
-                    database.addPoints(event.getAuthor().getIdLong(), points);
 
                     if (points != 0) {
+                        database.addPoints(event.getAuthor().getIdLong(), points);
                         event.getChannel().sendMessage(event.getAuthor().getAsMention() + ", you have been awarded **" +
                                 points + " points** for being active and typing in the chats.").queue();
                     }
@@ -36,7 +36,7 @@ public class Listener extends ListenerAdapter {
             }
         }
 
-        if (!event.getMessage().isWebhookMessage() && !event.getAuthor().isBot()) {
+        if (!event.getMessage().isWebhookMessage() && !event.getAuthor().isBot() && event.getMember() != null) {
             if (event.getGuild().getIdLong() == Constants.MAIN_GUILD_ID &&
                     event.getMessage().getContentRaw().startsWith(Constants.PREFIX)) {
                 if (event.getChannel().getIdLong() == Constants.BOT_COMMANDS ||

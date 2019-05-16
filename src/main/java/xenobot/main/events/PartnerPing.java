@@ -8,20 +8,23 @@ import xenobot.main.Constants;
 import java.awt.*;
 
 public class PartnerPing extends ListenerAdapter {
-
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if (event.getAuthor().isBot()) {
             return;
         }
 
+        if (event.getMessage().isWebhookMessage()) {
+            return;
+        }
+
         if (event.getGuild().getIdLong() == Constants.MAIN_GUILD_ID) {
-            if (event.getChannel().getIdLong() == Constants.PARTNERS_PING) {
+            if (event.getChannel().getIdLong() == Constants.PARTNERS) {
                 EmbedBuilder partnerPingEmbed = new EmbedBuilder();
                 if (event.getMessage().mentionsEveryone()) {
                     partnerPingEmbed.setTitle("⫸ Partner Manager ⫷");
                     partnerPingEmbed.setDescription("**Don't want to receive partner ping anymore?**\n\n" +
-                            "Go to the <#" + Constants.ASSIGN_ROLES + "> and react to the `No Server Partner Ping` role.");
+                            "Go to the <#" + Constants.ASSIGN_ROLES + "> and react to the `Partner Ping` role.");
                     partnerPingEmbed.setColor(Color.MAGENTA);
                     partnerPingEmbed.setFooter("Bot Developed by " + Constants.DEVELOPER + " - Version " +
                             Constants.VERSION, event.getJDA().getSelfUser().getAvatarUrl());

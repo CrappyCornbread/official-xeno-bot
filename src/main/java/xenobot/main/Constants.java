@@ -16,12 +16,10 @@ public class Constants {
     public static final long GENERAL_CHAT = 575385112200609802L;
     public static final long VC_TEXT = 572977682149801985L;
     public static final long BOT_COMMANDS = 572901471998312470L;
-    public static final long REPORT_HERE = 572901554479431680L;
     public static final long SUGGEST_HERE = 572901582635532309L;
-    public static final long REPORT_LOG = 572901658032603156L;
     public static final long SUGGEST_LOG = 572901639657226253L;
-    public static final long XENO_LOG = 572902714183385129L;
-    public static final long PARTNERS_PING = 574252457396535316L;
+    public static final long PARTNERS = 577591928896487454L;
+    public static final long PARTNER_POINTS = 577592367843115028L;
     public static final long ASSIGN_ROLES = 575340296121090058L;
     public static final long RULES = 575880453677121536L;
     public static final long STAFF_APPLICATION = 575883213784743976L;

@@ -1,6 +1,7 @@
 package xenobot.main.events;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -14,28 +15,51 @@ public class SuggestionsManager extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 
-        if (event.getAuthor().isBot()) {
-            return;
-        }
-
-        if (event.getMessage().isWebhookMessage()) {
-            return;
-        }
-
-        List<Message.Attachment> attachments = event.getMessage().getAttachments();
-
-        if (attachments.size() != 0) {
-            event.getChannel().deleteMessageById(event.getMessage().getIdLong()).queue();
-            return;
-        }
-
         if (event.getGuild().getIdLong() == Constants.MAIN_GUILD_ID && event.getChannel().getIdLong() == Constants.SUGGEST_HERE) {
 
-            event.getChannel().deleteMessageById(event.getMessage().getIdLong()).queue();
+            if (event.getAuthor().getIdLong() == Constants.BOT_ID) {
+                return;
+            }
+
+            event.getMessage().delete().queue();
+
+            if (event.getAuthor().isBot()) {
+                return;
+            }
+
+            if (event.getMessage().isWebhookMessage()) {
+                return;
+            }
 
             EmbedBuilder suggestionEmbed = new EmbedBuilder();
 
-            if (event.getMessage().getContentRaw().contains("https://discord.gg/")) {
+            List<Member> membersMentions = event.getMessage().getMentionedMembers();
+
+            if (membersMentions.size() != 0) {
+                suggestionEmbed.setTitle("⫸ Suggestions Manager ⫷");
+                suggestionEmbed.setDescription("You are not allowed to mentions members when sending a suggestion.");
+                suggestionEmbed.setColor(Color.MAGENTA);
+                suggestionEmbed.setFooter("Contact the bot developer if there is an issue.", event.getJDA().getSelfUser().getAvatarUrl());
+                event.getChannel().sendMessage(suggestionEmbed.build()).queue(messageSent -> messageSent.delete()
+                        .queueAfter(5, TimeUnit.SECONDS));
+                return;
+            }
+
+            List<Message.Attachment> attachments = event.getMessage().getAttachments();
+
+            if (attachments.size() != 0) {
+                suggestionEmbed.setTitle("⫸ Suggestions Manager ⫷");
+                suggestionEmbed.setDescription("You are not allowed to attach images or files when sending a suggestion.");
+                suggestionEmbed.setColor(Color.MAGENTA);
+                suggestionEmbed.setFooter("Contact the bot developer if there is an issue.", event.getJDA().getSelfUser().getAvatarUrl());
+                event.getChannel().sendMessage(suggestionEmbed.build()).queue(messageSent -> messageSent.delete()
+                        .queueAfter(5, TimeUnit.SECONDS));
+                return;
+            }
+
+            List<String> invites = event.getMessage().getInvites();
+
+            if (invites.size() != 0) {
                 suggestionEmbed.setTitle("⫸ Suggestions Manager ⫷");
                 suggestionEmbed.setDescription("Your suggestion has not been sent due to detection of a Discord link.");
                 suggestionEmbed.setColor(Color.MAGENTA);

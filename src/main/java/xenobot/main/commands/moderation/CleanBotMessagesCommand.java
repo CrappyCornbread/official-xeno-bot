@@ -19,6 +19,7 @@ public class CleanBotMessagesCommand implements ICommand {
             return;
         }
 
+        event.getMessage().delete().queue();
 
         if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
             event.getChannel().deleteMessageById(event.getMessage().getIdLong()).queue();
@@ -41,7 +42,6 @@ public class CleanBotMessagesCommand implements ICommand {
                 return false;
             }).thenRun(() -> event.getChannel().purgeMessages(allMsgs));
 
-            event.getChannel().deleteMessageById(event.getMessage().getIdLong()).queue();
             event.getChannel().sendMessage("***Bots messages are being cleared.***").queue(message -> {
                 long id = message.getIdLong();
                 event.getChannel().editMessageById(id, "***Cleaned!***").queueAfter(3, TimeUnit.SECONDS);
@@ -56,7 +56,8 @@ public class CleanBotMessagesCommand implements ICommand {
 
     @Override
     public String getHelp() {
-        return "This command can only be used if you have the **Manage Messages** permission.\n\n" +
+        return "Cleans bots messages.\n\n" +
+                "__**Requires:**__ `Manage Messages` permission\n\n" +
                 "__**Usage:**__ `" + Constants.PREFIX + getInvoke() + "`";
     }
 

@@ -39,7 +39,7 @@ public class BaseTimers extends ListenerAdapter {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         long guildId = guild.getIdLong();
         JDA jda = guild.getJDA();
-        executor.scheduleAtFixedRate(() -> BaseTimers.announcementMessages(jda.getGuildById(guildId)), 0, 3, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(() -> BaseTimers.announcementMessages(jda.getGuildById(guildId)), 0, 3, TimeUnit.HOURS);
     }
 
     private static void executeRainbowRoles(Guild guild) {
@@ -49,24 +49,22 @@ public class BaseTimers extends ListenerAdapter {
         executor.scheduleAtFixedRate(() -> BaseTimers.constructRainbowRoles(jda.getGuildById(guildId)), 0, 2, TimeUnit.SECONDS);
     }
 
-    private static void cleanHashMaps(Guild guild) {
+    private static void cleanHashMaps() {
         mapWorkCooldowns.entrySet().removeIf(entry -> entry.getValue() <= System.currentTimeMillis());
         mapStealCooldowns.entrySet().removeIf(entry -> entry.getValue() <= System.currentTimeMillis());
         mapInvestCooldowns.entrySet().removeIf(entry -> entry.getValue() <= System.currentTimeMillis());
     }
 
-    private static void executeHashMapCleaner(Guild guild) {
+    private static void executeHashMapCleaner() {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        long guildId = guild.getIdLong();
-        JDA jda = guild.getJDA();
-        executor.scheduleAtFixedRate(() -> BaseTimers.cleanHashMaps(jda.getGuildById(guildId)), 0, 12, TimeUnit.HOURS);
+        executor.scheduleAtFixedRate(BaseTimers::cleanHashMaps, 0, 12, TimeUnit.HOURS);
     }
 
     private static void executeBankInterest(Guild guild) {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         long guildId = guild.getIdLong();
         JDA jda = guild.getJDA();
-        executor.scheduleAtFixedRate(() -> BaseTimers.constructBankInterest(jda.getGuildById(guildId)), 0, 1, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(() -> BaseTimers.constructBankInterest(jda.getGuildById(guildId)), 0, 2, TimeUnit.DAYS);
     }
 
     private static void executeWeeklyReset() {
@@ -77,7 +75,7 @@ public class BaseTimers extends ListenerAdapter {
     private static void announcementMessages(Guild guild) {
         String[] msgs = {
                 "Our rules can be found here: <#" + Constants.RULES + "> It is your responsibility to know them.",
-                "Don't want anymore partner ping? Go here <#" + Constants.ASSIGN_ROLES + "> to remove the `partner ping` role.",
+                "Don't want anymore partner ping? Go here <#" + Constants.ASSIGN_ROLES + "> to remove the `Partner Ping` role.",
                 "If you're having an issue with a member, please, don't hesitate to report them to the staff team.",
                 guild.getName() + " is currently looking for staff. Head over to <#" + Constants.STAFF_APPLICATION + "> to apply!"
         };
@@ -85,12 +83,12 @@ public class BaseTimers extends ListenerAdapter {
         Random random = new Random();
         int index = random.nextInt(msgs.length - 1);
 
-        EmbedBuilder announcement = new EmbedBuilder();
-        announcement.setTitle("Attention members!");
-        announcement.setDescription(msgs[index]);
-        announcement.setColor(Color.MAGENTA);
-        announcement.setFooter("Any problems, please, contact the staff team.", guild.getSelfMember().getUser().getAvatarUrl());
-        guild.getTextChannelById(Constants.GENERAL_CHAT).sendMessage(announcement.build()).queue();
+        EmbedBuilder announcementEmbed = new EmbedBuilder();
+        announcementEmbed.setTitle("Attention members!");
+        announcementEmbed.setDescription(msgs[index]);
+        announcementEmbed.setColor(Color.MAGENTA);
+        announcementEmbed.setFooter("Any problems, please, contact the staff team.", guild.getSelfMember().getUser().getAvatarUrl());
+        guild.getTextChannelById(Constants.GENERAL_CHAT).sendMessage(announcementEmbed.build()).queue();
     }
 
     private static void constructBankInterest(Guild guild) {
@@ -119,13 +117,16 @@ public class BaseTimers extends ListenerAdapter {
     }
 
     private static void weeklyMessageCountReset() {
-        database.resetWeeklyBoards();
+        database.resetWeeklyLeaderboards();
     }
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+        if (event.getAuthor().isBot()) {
+            return;
+        }
 
-        if (event.getAuthor() == null || event.getAuthor().isBot()) {
+        if (event.getMessage().isWebhookMessage()) {
             return;
         }
 
@@ -155,7 +156,7 @@ public class BaseTimers extends ListenerAdapter {
                         event.getChannel().deleteMessageById(event.getMessage().getIdLong()).queue();
                         event.getChannel().sendMessage("Executing hash map cleaning every **12** hours.").queue(messageSent -> messageSent.delete()
                                 .queueAfter(5, TimeUnit.SECONDS));
-                        executeHashMapCleaner(event.getGuild());
+                        executeHashMapCleaner();
                         return;
                     }
                     if (msgArgs[1].equalsIgnoreCase("rainbow")) {

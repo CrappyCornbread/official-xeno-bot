@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Database {
 
-    private final String DB_URL = "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=DataStorage88OUT";
+    private final String DB_URL = "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=StoreMyData88Now";
     private final Jdbi jdbi = Jdbi.create(DB_URL);
 
     public void addMessageCounter(long userId) {
@@ -105,15 +105,15 @@ public class Database {
                 "ORDER BY (Bank) DESC;")
                 .map(new UserMapperBank()).list());
     }
-    public void resetWeeklyBoards() {
+    public void resetWeeklyLeaderboards() {
         jdbi.withHandle(handle -> handle.createUpdate("UPDATE UserInformation SET MessageCount = 0;")
                 .execute());
 
     }
     public void cleanDatabase() {
-        jdbi.withHandle(handle -> handle.createUpdate("DELETE FROM UserInformation WHERE " +
-                "MessageCount = 0 AND " +
-                "Points = 0 AND " +
+        jdbi.withHandle(handle -> handle.createUpdate("DELETE FROM UserInformation WHERE\n" +
+                "MessageCount = 0 AND\n" +
+                "Points = 0 AND\n" +
                 "Bank = 0;")
                 .execute());
     }

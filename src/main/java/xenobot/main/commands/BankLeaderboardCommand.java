@@ -24,7 +24,8 @@ public class BankLeaderboardCommand implements ICommand {
             List<Users> users = database.getBankLeaderboard();
 
             if (users.size() == 0) {
-                event.getChannel().sendMessage(event.getAuthor().getAsMention() + " there is currently no leaderboard for this section.").queue();
+                event.getChannel().sendMessage(event.getAuthor().getAsMention() + ", there is currently no leaderboard " +
+                        "for **Bank Balance**.").queue();
                 return;
             }
             if (users.size() < 10) {
@@ -38,7 +39,7 @@ public class BankLeaderboardCommand implements ICommand {
             int x = 1;
             for (Users user : users) {
                 bankLeaderboard.append("**").append(x).append(".** ").append("<@").append(user.getUserId()).append("> **")
-                        .append(user.getMsgCount()).append(" points**").append("\n");
+                        .append(user.getBankBalance()).append(" points**").append("\n");
                 x++;
             }
 

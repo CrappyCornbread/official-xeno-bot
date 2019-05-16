@@ -4,13 +4,10 @@ import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import xenobot.main.BotInfo;
 import xenobot.main.CommandManager;
-import xenobot.main.Constants;
 import xenobot.main.Listener;
-import xenobot.main.events.ConfessionsManager;
-import xenobot.main.events.MemberJoin;
-import xenobot.main.events.PartnerPing;
-import xenobot.main.events.SuggestionsManager;
+import xenobot.main.events.*;
 import xenobot.main.utilities.Database;
 import xenobot.main.utilities.timers.BaseTimers;
 
@@ -30,7 +27,7 @@ public class Main {
 
         try {
             new JDABuilder(AccountType.BOT)
-                    .setToken(BOT_TOKEN)
+                    .setToken(BotInfo.TOKEN)
                     .setAudioEnabled(false)
                     .addEventListeners(listener)
                     .addEventListeners(new MemberJoin())
@@ -38,12 +35,14 @@ public class Main {
                     .addEventListeners(new BaseTimers(database, mapInvestCooldowns, mapWorkCooldowns, mapStealCooldowns))
                     .addEventListeners(new PartnerPing())
                     .addEventListeners(new SuggestionsManager())
-                    .setActivity(Activity.watching("Your Bank Accounts"))
+                    .addEventListeners(new PartnerPoints(database))
+                    .setAutoReconnect(true)
+                    .setActivity(Activity.watching(BotInfo.ACTIVITY))
                     .setStatus(OnlineStatus.ONLINE)
                     .build().awaitReady();
-
         } catch (LoginException | InterruptedException e) {
             e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 

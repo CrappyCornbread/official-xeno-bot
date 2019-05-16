@@ -24,7 +24,8 @@ public class CountLeaderboardCommand implements ICommand {
             List<Users> users = database.getCountLeaderboard();
 
             if (users.size() == 0) {
-                event.getChannel().sendMessage(event.getAuthor().getAsMention() + " there is currently no leaderboard for this section.").queue();
+                event.getChannel().sendMessage(event.getAuthor().getAsMention() + ", there is currently no leaderboard " +
+                        "for **Message Count**.").queue();
                 return;
             }
             if (users.size() < 10) {
