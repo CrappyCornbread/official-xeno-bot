@@ -7,7 +7,8 @@ import java.util.List;
 
 public class Database {
 
-    private final String DB_URL = "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=StoreMyData88Now";
+    // jdbc:postgresql://localhost:5432/postgres?user=postgres&password=StoreMyData88Now
+    private final String DB_URL = "postgres://yziauimhodlfxu:93282102cce1a8b57ec8cbf1a100a5e4f4ca767f882434b22fce0ba51dfa13bb@ec2-54-221-198-156.compute-1.amazonaws.com:5432/dbgotodc5bvvc8";
     private final Jdbi jdbi = Jdbi.create(DB_URL);
 
     public void addMessageCounter(long userId) {
