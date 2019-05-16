@@ -1,1 +1,1 @@
-worker: java -jar target/official-xeno-bot-1.0.3.jar
+worker: java -jar target/xeno-bot-jda-1.0.3.jar
